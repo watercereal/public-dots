@@ -10,4 +10,4 @@ dot files for qtile rice
 ### Setting Terminal Colors
 to set the your terminal colors just add
 "cat /colors"
-to tour .bashrc
+to to your .bashrc
