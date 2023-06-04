@@ -1,8 +1,12 @@
-# public-dots
-config files for qtile rice
- 
- to get terminal colors:
- $ pywal -i /backgrounds/wallhaven-5w23r8.jpg
- to generate color scheme, then add 
- cat ~/.cache/wal/sequences
-to your .bashrc
+# Dots
+dot files for qtile rice
+
+### Prerequisites
+- Qtile
+- Picom
+- Alacritty
+- psutil (https://pypi.org/project/psutil/) (for memory, cpu, and net widgets)
+- dbus-next (https://pypi.org/project/dbus-next/)(for Mpris2 widget)
+### Setting Terminal Colors
+to set the your terminal colors just add
+"cat /colors"

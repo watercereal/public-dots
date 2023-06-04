@@ -14,4 +14,3 @@ font:
   bold:
     family: "Source Code Pro"
     style: Bold
-#colors from pywal (make sure pywal colors are added to .bashrc)
