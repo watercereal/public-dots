@@ -1,0 +1,17 @@
+window:
+  padding:
+    x: 16
+    y: 16
+  opacity: 0.4
+
+font:
+  normal:
+    family: "Source Code Pro"
+    style: Medium
+  italic:
+    family: "Source Code Pro"
+    style: Medium Italic
+  bold:
+    family: "Source Code Pro"
+    style: Bold
+#colors from pywal (make sure pywal colors are added to .bashrc)
