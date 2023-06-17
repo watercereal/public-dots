@@ -131,8 +131,6 @@ keys = [
     Key([mod, "control"], "v", lazy.spawn("pcmanfm"), desc="pcmanfm"),
     Key([mod], "s", lazy.spawn("flameshot gui"), desc="screenshot"),
     Key([mod], "c", lazy.spawn("vscodium /home/water/.config/qtile/config.py")),
-    Key([mod,], "l",lazy.spawn([terminal, "-e", ""])),
-
     Key([mod], "f", lazy.window.toggle_floating()),
 
 
