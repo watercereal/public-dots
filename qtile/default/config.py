@@ -1,39 +1,4 @@
-# change theme variable to change the colors
-theme = "blue"
-if (theme == "mono"):
-    bg = "0A0A0B"
-    fg = "FFF6FE"
-    bg2 = bg 
-    fg2 = fg
-elif (theme == "green"):
-    bg = "051B11"
-    fg = "1FB06D"
-    bg2 = bg 
-    fg2 = fg
-elif (theme == "purple"):
-    bg = "1A0C1F"
-    fg = "8A39A9"
-    bg2 = "2D1436"
-    fg2 = fg 
-elif (theme == "pink"):
-    bg = "0d0e19"
-    fg = "a0608f"
-    bg2 = bg
-    fg2 = fg
-elif (theme == "red"):
-    bg = "100817"
-    fg = "6c1b29"
-    bg2 = "170c21"
-    fg2 = "751f2d"
-elif (theme == "blue"):
-    bg = "#051D29"
-    fg = "5C9FBF"
-    bg2 = bg
-    fg2 = fg
-
-
-
-# Copyright (c) 2010 Aldo Cortesi
+p# Copyright (c) 2010 Aldo Cortesi
 # Copyright (c) 2010, 2014 dequis
 # Copyright (c) 2012 Randall Ma
 # Copyright (c) 2012-2014 Tycho Andersen
@@ -58,17 +23,11 @@ elif (theme == "blue"):
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from libqtile import bar, layout, widget, hook
+
+from libqtile import bar, layout, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
-from libqtile.config import Screen
-from libqtile.bar import Gap, Bar, STRETCH
-from libqtile.widget import GroupBox, Clock, Spacer
-
-from qtile_extras.widget import ALSAWidget
-
-import os
 
 mod = "mod4"
 terminal = guess_terminal()
@@ -111,33 +70,14 @@ keys = [
     Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod], "r", lazy.spawn("rofi -show drun"), desc="Spawn a command using a prompt widget"),
-
-    #sound thing:
-    Key([], "XF86AudioRaiseVolume", lazy.spawn("pactl set-sink-volume 1 +2%"), desc='Volume Up'),
-    Key([], "XF86AudioLowerVolume", lazy.spawn("pactl set-sink-volume 1 -2%"), desc='volume down'),
-    Key([], "XF86AudioMute", lazy.spawn("pulsemixer --toggle-mute"), desc='Volume Mute'),
-    Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause"), desc='playerctl'),
-    
-    # weird sound stuff
-    Key([mod], "delete", lazy.spawn("pactl set-sink-volume 1 60%"), desc='volume to 60'),
-    Key([mod], "insert", lazy.spawn("playerctl previous"), desc='playerctl'),
-    Key([mod], "Home", lazy.spawn("playerctl next"), desc='playerctl'),
-
-## Custom Keybinds
-    Key([mod], "b", lazy.spawn("chromium"), desc="web"),
-    Key([mod], "d", lazy.spawn("vscodium /home/water/code/"), desc="vs code (ium)"),
-    Key([mod], "v", lazy.spawn([terminal, "-e", "ranger"]), desc="ranger file manager"),
-    Key([mod, "control"], "v", lazy.spawn("pcmanfm"), desc="pcmanfm"),
-    Key([mod], "s", lazy.spawn("flameshot gui"), desc="screenshot"),
-    Key([mod], "c", lazy.spawn("vscodium /home/water/.config/qtile/config.py")),
-    Key([mod,], "l",lazy.spawn([terminal, "-e", ""])),
-
-    Key([mod], "f", lazy.window.toggle_floating()),
+    Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
 
 
+    Key([mod], "b", lazy.spawn("chromium")),
+    Key([mod], "v", lazy.spawn("pcmanfm")),
 ]
-groups = [Group(i) for i in "12345678p"]
+
+groups = [Group(i) for i in "123456789"]
 
 for i in groups:
     keys.extend(
@@ -164,7 +104,7 @@ for i in groups:
     )
 
 layouts = [
-    layout.Columns(border_focus=fg,border_normal=bg,border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4, margin=4),
+    layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
     layout.Max(),
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=2),
@@ -180,94 +120,46 @@ layouts = [
 ]
 
 widget_defaults = dict(
-    font="Hack Nerd Font Propo", #D050000L
-    fontsize=23,
-    padding=0,
-    background=bg,
-    foreground=fg,
-    )
+    font="sans",
+    fontsize=12,
+    padding=3,
+)
 extension_defaults = widget_defaults.copy()
 
-
-
 screens = [
-
     Screen(
         top=bar.Bar(
             [
-                widget.OpenWeather(location='LOCATION',format='{main_feels_like}°{units_temperature} {weather}'),
-                Spacer(12),
-                widget.WindowTabs(fontsize=12),
-                widget.AGroupBox(border=bg),
-                Spacer(STRETCH),  
-                Spacer(12),
-                widget.Volume(volume_app="pulseaudiovolumecontrol"),
-                widget.TextBox("|",padding=3),
-                # if images dont work, replace ~ with /home/USER NAME/...
-                widget.Image(filename="~/.config/qtile/assets/yt2.png", mouse_callbacks={'Button1':lazy.spawn("chromium https://youtube.com")},scale=False,margin_y=8),
-                widget.Image(filename="~/.config/qtile/assets/mario2.png", mouse_callbacks={'Button1':lazy.spawn("mari0")},scale=False,margin_y=8),
-                widget.Image(filename="~/.config/qtile/assets/steam.png", mouse_callbacks={'Button1':lazy.spawn("Steam")},scale=False,margin_y=8),
-
-
-                widget.TextBox("|",padding=3),
-
-
-                Clock(
-                    format="%a %d %b  %I:%M %p",
+                widget.CurrentLayout(),
+                widget.GroupBox(),
+                widget.Prompt(),
+                widget.WindowName(),
+                widget.Chord(
+                    chords_colors={
+                        "launch": ("#ff0000", "#ffffff"),
+                    },
+                    name_transform=lambda name: name.upper(),
                 ),
-                widget.TextBox("|",padding=3),
+                widget.TextBox("default config", name="default"),
+                widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
+                # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
+                # widget.StatusNotifier(),
                 widget.Systray(),
-                widget.TextBox("|",padding=3),
-
-                Spacer(24),
+                widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
+                widget.QuickExit(),
             ],
-            38,
-            border_width=1,
-            border_color=fg,
-            margin=[10, 10, 10, 10],
-            background=bg,
+            24,
+            # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
+            # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
         ),
-        bottom=Gap(12),
-        left=Gap(12),
-        right=Gap(12),
-    ),
-
-Screen(
-        top=Bar(
-        [
-            Spacer(5,background=bg2),
-            widget.Mpris2(no_metadata_text="Youtube",background=bg2),
-            Spacer(STRETCH,background=bg2),
-            widget.AGroupBox(border=bg2,background=bg2),
-            Spacer(STRETCH,background=bg2),  
-            widget.TextBox("󰧑",fontsize=30,font="Symbols Nerd Font Mono",background=bg2), #brain
-            widget.Memory(measure_mem='G',background=bg2),
-            widget.TextBox("||",padding=3,background=bg2),
-            widget.TextBox("󰃬",fontsize=30,background=bg2), #calculator
-            widget.CPU(padding=3,format='CPU {load_percent}%',background=bg2),
-            widget.TextBox("",fontsize=22,padding=3,background=bg2), #calculator                    
-            widget.ThermalZone(padding=3,background=bg2,fgcolor_normal=fg),
-            widget.TextBox("||",padding=3,background=bg2),
-            widget.Net(format=' {down}',background=bg2),
-            widget.TextBox("||",padding=3,background=bg2),
-            Spacer(24,background=bg2),
-        ],
-        38,
-        border_width=1,
-        border_color=fg2,
-        margin=[10, 10, 10, 10],
-        background=bg2,
-    ),
-    bottom=Gap(12),
-    left=Gap(12),
-    right=Gap(12),
     ),
 ]
+
 # Drag floating layouts.
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
     Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.toggle_floating()),
+    Click([mod], "Button2", lazy.window.bring_to_front()),
 ]
 
 dgroups_key_binder = None
@@ -276,9 +168,6 @@ follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
 floating_layout = layout.Floating(
-    border_focus=fg,
-    border_normal=bg,
-    border_width=2,
     float_rules=[
         # Run the utility of `xprop` to see the wm class and name of an X client.
         *layout.Floating.default_float_rules,

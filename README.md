@@ -1,5 +1,5 @@
 # Dots
-dot files for qtile rice
+dot files for qtile and stuff
 
 ### Prerequisites
 - Qtile
